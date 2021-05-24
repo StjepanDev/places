@@ -1,7 +1,9 @@
+import Layout from '../../components/Layout';
+
 export default function PlacePage() {
   return (
-    <div>
+    <Layout>
       <h1>My Place</h1>
-    </div>
+    </Layout>
   );
 }
