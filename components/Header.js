@@ -9,12 +9,16 @@ export default function Header() {
           <a>Nice Places</a>
         </Link>
       </div>
-
       <nav>
         <ul>
           <li>
             <Link href="/places">
               <a>Places</a>
+            </Link>
+          </li>
+          <li>
+            <Link href="/places/add">
+              <a>Add Place</a>
             </Link>
           </li>
         </ul>
