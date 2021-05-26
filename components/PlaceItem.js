@@ -7,7 +7,11 @@ export default function PlaceItem({ place }) {
     <div className={styles.place}>
       <div className={styles.img}>
         <Image
-          src={place.image ? place.image : '/images/IMG_20190706_162512.jpg}'}
+          src={
+            place.image
+              ? place.image.formats.thumbnail.url
+              : '/images/IMG_20190706_162512.jpg}'
+          }
           width={170}
           height={100}
         />

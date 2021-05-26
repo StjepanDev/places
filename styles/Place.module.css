@@ -1,0 +1,32 @@
+.place {
+  position: relative;
+  padding-top: 40px;
+}
+
+.place h3 {
+  font-size: 25px;
+}
+
+.place p {
+  margin: 10px 0;
+}
+
+.image {
+  margin-bottom: 20px;
+}
+
+.controls {
+  position: absolute;
+  right: 30px;
+  top: 0;
+}
+
+.delete {
+  margin-left: 20px;
+  color: rgb(133, 13, 29);
+}
+
+.back {
+  display: block;
+  margin-top: 40px;
+}

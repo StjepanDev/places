@@ -1,8 +1,9 @@
+import qs from 'qs';
 import Layout from '../../components/Layout';
 import PlaceItem from '../../components/PlaceItem';
 import { API_URL } from '../../config/index';
 
-export default function HomePage({ places }) {
+export default function SearchPage({ places }) {
   return (
     <Layout>
       <title>Nice Places</title>
@@ -15,13 +16,22 @@ export default function HomePage({ places }) {
   );
 }
 
-export async function getStaticProps() {
-  const res = await fetch(`${API_URL}/places?_sort=date:ASC`);
+export async function getServerSideProps({ query: { term } }) {
+  const query = qs.stringify({
+    _where: {
+      _or: [
+        { name_contains: term },
+        { description_contains: term },
+        { influencers_contains: term },
+        { address_contains: term },
+      ],
+    },
+  });
+
+  const res = await fetch(`${API_URL}/places?${query}`);
   const places = await res.json();
 
   return {
     props: { places: places.reverse() },
-
-    revalidate: 1,
   };
 }

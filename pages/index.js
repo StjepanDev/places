@@ -23,7 +23,7 @@ export default function HomePage({ places }) {
 }
 
 export async function getStaticProps() {
-  const res = await fetch(`${API_URL}/api/places`);
+  const res = await fetch(`${API_URL}/places?_sort=date:ASC&_limit=3`);
   const places = await res.json();
 
   return {
