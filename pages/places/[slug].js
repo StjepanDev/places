@@ -1,12 +1,30 @@
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import Layout from '../../components/Layout';
 import styles from '../../styles/Place.module.css';
 import { API_URL } from '../../config/index';
 import Link from 'next/link';
 import Image from 'next/image';
 import { FaPencilAlt, FaTimes } from 'react-icons/fa';
+import { useRouter } from 'next/router';
 
 export default function PlacePage({ place }) {
-  const deletePlace = (e) => {};
+  const router = useRouter();
+
+  const deletePlace = async (e) => {
+    if (confirm('Are you sure')) {
+      const res = await fetch(`${API_URL}/places/${place.id}`, {
+        method: 'DELETE',
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        toast.error(data.message);
+      } else {
+        router.push('/places');
+      }
+    }
+  };
 
   return (
     <Layout>
@@ -25,6 +43,7 @@ export default function PlacePage({ place }) {
           {new Date(place.date).toLocaleDateString('en-GB')} at {place.time}
         </span>
         <h1>{place.name}</h1>
+        <ToastContainer />
 
         {place.image && (
           <div className={styles.image}>

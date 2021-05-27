@@ -1,22 +1,33 @@
-import Layout from '../../components/Layout';
+import Layout from '../../../components/Layout';
+import Modal from '../../../components/Modal';
 import { useState } from 'react';
+import { FaImage } from 'react-icons/fa';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
-import { API_URL } from '../../config/index';
-import styles from '../../styles/Form.module.css';
+import Image from 'next/image';
+import { API_URL } from '../../../config/index';
+import styles from '../../../styles/Form.module.css';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import moment from 'moment';
 
-export default function AddPlacePage() {
+export default function EditPlacePage({ place }) {
+  console.log(place);
   const [values, setValues] = useState({
-    name: '',
-    influencers: '',
-    address: '',
-    country: '',
-    date: '',
-    time: '',
-    description: '',
+    name: place.name,
+    influencers: place.influencers,
+    address: place.address,
+    country: place.country,
+    date: place.date,
+    time: place.time,
+    description: place.description,
   });
+
+  const [image, setImage] = useState(
+    place.image ? place.image.formats.thumbnail.url : null
+  );
+
+  const [showModal, setShowModal] = useState(false);
 
   const router = useRouter();
 
@@ -31,8 +42,8 @@ export default function AddPlacePage() {
     if (hasEmptyFields) {
       toast.error('Please fill in all fields');
     }
-    const res = await fetch(`${API_URL}/places`, {
-      method: 'POST',
+    const res = await fetch(`${API_URL}/places/${place.id}`, {
+      method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(values),
     });
@@ -53,7 +64,7 @@ export default function AddPlacePage() {
   return (
     <Layout title="Add New Place">
       <Link href="/places">Go Back</Link>
-      <h1>Add Place To Be</h1>
+      <h1>Edit Place</h1>
       <ToastContainer autoClose={3000} position="top-center" />
       <form className={styles.form} onSubmit={handleSubmit}>
         <div className={styles.grid}>
@@ -103,7 +114,7 @@ export default function AddPlacePage() {
               type="date"
               name="date"
               id="date"
-              value={values.date}
+              value={moment(values.date).format('yyyy-MM-DD')}
               onChange={handleInputChange}
             />
           </div>
@@ -129,8 +140,38 @@ export default function AddPlacePage() {
             onChange={handleInputChange}
           ></textarea>
         </div>
-        <input type="submit" value="Add Place" className="btn" />
+        <input type="submit" value="Edit Event" className="btn" />
       </form>
+
+      <h2>Place Preview</h2>
+
+      {image ? (
+        <Image src={image} height={100} width={170} />
+      ) : (
+        <div>
+          <p>No Image Uploaded</p>
+        </div>
+      )}
+
+      <div>
+        <button className="btn-secondary" onClick={() => setShowModal(true)}>
+          <FaImage /> Set Image
+        </button>
+      </div>
+      <Modal show={showModal} onClose={() => setShowModal(false)}>
+        Image Upload
+      </Modal>
     </Layout>
   );
+}
+
+export async function getServerSideProps({ params: { id } }) {
+  const res = await fetch(`${API_URL}/places/${id}`);
+  const place = await res.json();
+
+  return {
+    props: {
+      place,
+    },
+  };
 }
